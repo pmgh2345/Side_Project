@@ -5,10 +5,18 @@ def initialize
   @key = gets.chomp
   key = @key
   @chromatic = ["a","as","b","c","cs","d","ds","e","f","fs","g","gs"]
+  scaleSize = 12
   @majorArray = [0,2,4,5,7,9,11]
   @minorArray = [0,2,3,5,7,8,10]
+  @dorianArray = [0,2,3,5,7,9,10]
+  @phrygianArray = [0,1,3,5,7,8,10]
+  @lydianArray = [0,2,4,6,7,9,11]
+  @mixolydianArray = [0,2,4,5,7,9,10]
+  @locrianArray = [0,1,3,5,6,8,10]
+  @majorChord_array = [0,4,7,11]
+  @minorChord_array = [0,3,7,10]
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
-  @construct = Proc.new do |scaleSize,array|
+  @construct = Proc.new do |array|
     structure = []
     array.each do |x| #we iterate over the appropriate array's intervals, say first degree of maj scale, 2nd, 3rd...
       element = (@indexx + x) % scaleSize  #adding each to the index of our starting note         
@@ -20,15 +28,55 @@ def initialize
 end
 
 def majorScale
-  scaleSize = 12
   array = @majorArray
-  @construct.call scaleSize, array
+  @construct.call array
 end
 
 def minorScale
+  array = @minorArray
+  @construct.call array
+end
+
+def dorian
+  array = @dorianArray
+  @construct.call array
+end
+
+def phrygian
+  array = @phrygianArray
+  @construct.call array
+end
+
+def lydian
+  array = @lydianArray
+  @construct.call array
+end
+
+def mixolydian
+  array = @mixolydianArray
+  @construct.call array
+end
+
+def locrian
+  array = @locrianArray
+  @construct.call array
+end
+
+def majorChord
+  array = @majorChord_array
+  @construct.call array
+end
+
+def minorChord
+  array = @minorChord_array
+  @construct.call array
 end
 
 end
 
 query = Note.new
 query.majorScale
+query.minorScale
+query.majorChord
+query.minorChord
+query.dorian
