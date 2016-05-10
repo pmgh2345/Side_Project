@@ -23,7 +23,10 @@ def initialize
       component = @chromatic[element]  #associating that index with its place in the chromatic scale
       structure.push(component) #then add each component of scale/mode/chord by this index into new array
     end
-    puts structure #returns new array containing desired scale/mode/chord
+    puts "Here it is!"
+    structure.each do |x| #returns new array containing desired scale/mode/chord
+      print '-' + x.upcase + '-'
+    end
   end
 end
 
@@ -62,12 +65,12 @@ def locrian
   @construct.call array
 end
 
-def majorChord
+def major
   array = @majorChord_array
   @construct.call array
 end
 
-def minorChord
+def minor
   array = @minorChord_array
   @construct.call array
 end
@@ -75,8 +78,4 @@ end
 end
 
 query = Note.new
-query.majorScale
-query.minorScale
-query.majorChord
-query.minorChord
-query.dorian
+query.major
