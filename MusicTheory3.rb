@@ -10,20 +10,15 @@ def initialize
   @indexx = $chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
 end
 
-def construction (scaleSize,arrayType)
-  return Proc.new do
-    structure = []
-    arrayType.each do |x| #we iterate over the appropriate array's intervals, say first degree of maj scale, 2nd, 3rd...
-      element = (@indexx + x) % scaleSize  #adding each to the index of our starting note
-      component = $chromatic[element]  #associating that index with its place in the chromatic scale
-      structure.push(component) #then add each component of scale/mode/chord by this index into new array
-    end
-    puts structure #returns new array containing desired scale/mode/chord
+construction = Proc.new do |scaleSize,array|
+  structure = []
+  arrayType.each do |x| #we iterate over the appropriate array's intervals, say first degree of maj scale, 2nd, 3rd...
+    element = (@indexx + x) % scaleSize  #adding each to the index of our starting note         
+    component = $chromatic[element]  #associating that index with its place in the chromatic scale
+    structure.push(component) #then add each component of scale/mode/chord by this index into new array
   end
+  puts structure #returns new array containing desired scale/mode/chord
 end
-
-majorScale = construction(12, $majorArray)
-majorScale.call
 
 #def majorScale
   #scaleSize = 12
