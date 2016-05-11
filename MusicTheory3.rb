@@ -4,7 +4,7 @@ def initialize
   puts "What note are we starting with?"
   @key = gets.chomp
   key = @key
-  @chromatic = ["a","as","b","c","cs","d","ds","e","f","fs","g","gs"]
+  @chromatic = ["a","a#","b","c","c#","d","d#","e","f","f#","g","g#"]
   scaleSize = 12
   @majorArray = [0,2,4,5,7,9,11]
   @minorArray = [0,2,3,5,7,8,10]
