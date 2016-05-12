@@ -15,6 +15,7 @@ def initialize
   @locrianArray = [0,1,3,5,6,8,10]
   @majorChord_array = [0,4,7,11,14]
   @minorChord_array = [0,3,7,10,14]
+  @augArray = [0,4,8]
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
   @construct = Proc.new do |array|
     structure = []
@@ -26,6 +27,9 @@ def initialize
     puts "Here it is!"
     structure.each do |x| #returns new array containing desired scale/mode/chord
       print '-' + x.upcase + '-'
+      if x == structure.last
+        puts ""
+      end
     end
   end
 end
@@ -65,17 +69,22 @@ def locrian
   @construct.call array
 end
 
-def major
+def M
   array = @majorChord_array
   @construct.call array
 end
 
-def minor
+def m
   array = @minorChord_array
+  @construct.call array
+end
+
+def aug
+  array = @augArray
   @construct.call array
 end
 
 end
 
-query = Note.new
-query.major
+q = Note.new
+q.M
