@@ -15,22 +15,24 @@ def initialize
   @locrianArray = [0,1,3,5,6,8,10]
   @majorChord_array = [0,4,7,11,14]
   @minorChord_array = [0,3,7,10,14]
+  @ninthArray = [14]
   @augArray = [0,4,8]
+  @dimArray = [0,3,6]
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
   @construct = Proc.new do |array|
     structure = []
     array.each do |x| #we iterate over the appropriate array's intervals, say first degree of maj scale, 2nd, 3rd...
       element = (@indexx + x) % scaleSize  #adding each to the index of our starting note         
-      component = @chromatic[element]  #associating that index with its place in the chromatic scale
+      component = @chromatic[element].upcase  #associating that index with its place in the chromatic scale
       structure.push(component) #then add each component of scale/mode/chord by this index into new array
     end
     puts "Here it is!"
-    structure.each do |x| #returns new array containing desired scale/mode/chord
-      print '-' + x.upcase + '-'
-      if x == structure.last
-        puts ""
-      end
-    end
+    puts structure.join("--") #returns new array containing desired scale/mode/chord
+      #print '-' + x + '-'
+      #if x == structure.last
+        #puts ""
+      #end
+    #end
   end
 end
 
@@ -84,7 +86,17 @@ def aug
   @construct.call array
 end
 
+def dim #this is programmed under assumption that only major chords will be diminished. Alter if this proves false.
+  array = @dimArray
+  @construct.call array
+end
+
+def ninth
+  array = @ninthArray
+  @construct.call array
+end
+
 end
 
 q = Note.new
-q.M
+q.dim
