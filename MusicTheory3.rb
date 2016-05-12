@@ -28,6 +28,11 @@ def initialize
       @structure.push(component) #then add each component of scale/mode/chord by this index into new array
     end
   end
+  @maj7th_fix = Proc.new do |threshold|
+    if @structure.length > threshold
+      @structure.delete_at(4)
+    end
+  end
   @output = Proc.new do
     puts "Here it is!"
     puts @structure.join("--") #returns new array containing desired scale/mode/chord
@@ -79,6 +84,7 @@ def M
   array = @majorChord_array
   @construct.call array
   @output.call
+  self
 end
 
 def m
@@ -109,12 +115,14 @@ def ninth
   array = @ninthArray
   @construct.call array
   @output.call
+  threshold = 5
+  @maj7th_fix.call threshold
 end
 
 end
 
 q = Note.new
-q.maj7
+q.M.ninth
 
 # To fix the issue with the 7th, lets add a method for major 7th, then for any chords requiring 9ths or higher we will automatically include the minor 7th, and then test the length at the end to see if there is 1 note too many, and if there is we will remove the minor 7th at its index.
 
