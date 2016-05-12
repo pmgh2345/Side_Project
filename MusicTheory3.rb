@@ -15,6 +15,7 @@ def initialize
   @locrianArray = [0,1,3,5,6,8,10]
   @majorChord_array = [0,4,7]
   @minorChord_array = [0,3,7]
+  @maj7_array = [0,11]
   @ninthArray = [10,14]
   @augArray = [0,4,8]
   @dimArray = [0,3,6]
@@ -98,6 +99,12 @@ def dim #this is programmed under assumption that only major chords get diminish
   @output.call
 end
 
+def maj7
+  array = @maj7_array
+  @construct.call array
+  @output.call
+end
+
 def ninth
   array = @ninthArray
   @construct.call array
@@ -107,7 +114,7 @@ end
 end
 
 q = Note.new
-q.majorScale
+q.maj7
 
 # To fix the issue with the 7th, lets add a method for major 7th, then for any chords requiring 9ths or higher we will automatically include the minor 7th, and then test the length at the end to see if there is 1 note too many, and if there is we will remove the minor 7th at its index.
 
