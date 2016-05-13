@@ -3,7 +3,11 @@ class Note
 def initialize
   puts "Give me a note or a chord, please."
   $input = gets.chomp
-  @key = $input[0]
+  if $input[1] == "#"
+    @key = $input[0] + $input[1]
+  else
+    @key = $input[0]
+  end
   key = @key
   @chromatic = ["a","a#","b","c","c#","d","d#","e","f","f#","g","g#"]
   scaleSize = 12
@@ -19,10 +23,12 @@ def initialize
   @min7_array = [10]
   @maj7_array = [11]
   @ninthArray = [14]
-  @thirteenthArray = [9]
+  @eleventhArray = [14,17]
+  @thirteenthArray = [14,17,21]
   @augArray = [0,4,8]
   @dimArray = [0,3,6]
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
+  @consolidate_array = []
   @construct = Proc.new do |array|
     @structure = []
     array.each do |x| #we iterate over the appropriate array's intervals, say first degree of maj scale, 2nd, 3rd...
@@ -31,9 +37,12 @@ def initialize
       @structure.push(component) #then add each component of scale/mode/chord by this index into new array
     end
   end
-  @output = Proc.new do
+  @consolidate = Proc.new do
+    @consolidate_array = @consolidate_array + @structure
+  end
+  $output = Proc.new do
     #puts "Here it is!"
-    puts @structure.join("--") #returns new array containing desired scale/mode/chord
+    puts @consolidate_array.join("--") #returns new array containing desired scale/mode/chord
   end
 end
 
@@ -81,7 +90,8 @@ end
 def M
   array = @majorChord_array
   @construct.call array
-  @output.call
+  @consolidate.call
+  #@output.call
   self
 end
 
@@ -116,7 +126,8 @@ end
 def maj7
   array = @maj7_array
   @construct.call array
-  @output.call
+  @consolidate.call
+  #@output.call
   self
 end
 
@@ -127,10 +138,18 @@ def ninth
   self
 end
 
-def m13
+def eleventh
+  array = @eleventhArray
+  @construct.call array
+  @output.call
+  self
+end
+
+def thirteenth
   array = @thirteenthArray
   @construct.call array
   @output.call
+  self
 end
 
 end
@@ -141,7 +160,7 @@ q = Note.new
 #Screw what i wrote above- we should use the drop method- we say if maj7_cond then we drop the first element of the array housing the output.
 
 #Here we will begin with the calling method for the triad part of the chord
-
+maj7_cond = $input.include?("j")
 minor_cond = ($input.count("m") == 2) || ($input.count("m") == 1 && maj7_cond == false)
 aug_cond = $input.include?("+") ##Take note that we must use this notation for aug
 dim_cond = $input.include?("o") #Take note that we must use this notation for dim
@@ -151,15 +170,17 @@ elsif aug_cond
   q.aug
 elsif dim_cond
   q.dim
+else
+  q.M
 end
 
 #Now we will determine if we need to call any additional methods, or if all we need is the triad
 
-beyond_triad = $input.include?( "7" || "9" || "1")
+beyond_triad = $input.include?( "7" ) || $input.include?("9") || $input.include?("1")
 
 #Now we must figure out what to do with the 7th chord
 
-maj7_cond = $input.include?("j")
+
 if beyond_triad
   if maj7_cond
     q.maj7
@@ -172,14 +193,23 @@ end
 
 #Now we must figure out the highest degree
 
-beyond_7th_cond = $input.include?( "9" || "1")
+beyond_7th_cond = $input.include?( "9") || $input.include?("1")
 thirteenthChord_cond = $input.include?("3")
+eleventhChord_cond = (thirteenthChord_cond == false) && ($input.include?( "9") == false)
 if beyond_7th_cond
   if thirteenthChord_cond
     q.thirteenth
+  elsif eleventhChord_cond
+    q.eleventh
+    puts "hey"
+  else
+    q.ninth
   end
-elsif
-  
+end
 
+#Now we have to see if there are any modifiers
 
+#modifier_cond = 
+
+$output.call
 
