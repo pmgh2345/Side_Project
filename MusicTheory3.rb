@@ -34,7 +34,7 @@ def initialize
     end
   end
   @output = Proc.new do
-    puts "Here it is!"
+    #puts "Here it is!"
     puts @structure.join("--") #returns new array containing desired scale/mode/chord
   end
 end
@@ -91,24 +91,28 @@ def m
   array = @minorChord_array
   @construct.call array
   @output.call
+  self
 end
 
 def aug
   array = @augArray
   @construct.call array
   @output.call
+  self
 end
 
 def dim #this is programmed under assumption that only major chords get diminished. Alter if this proves false.
   array = @dimArray
   @construct.call array
   @output.call
+  self
 end
 
 def maj7
   array = @maj7_array
   @construct.call array
   @output.call
+  self
 end
 
 def ninth
@@ -117,6 +121,7 @@ def ninth
   @output.call
   threshold = 5
   @maj7th_fix.call threshold
+  self
 end
 
 end
