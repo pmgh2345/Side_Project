@@ -19,6 +19,7 @@ def initialize
   @min7_array = [10]
   @maj7_array = [11]
   @ninthArray = [14]
+  @thirteenthArray = [9]
   @augArray = [0,4,8]
   @dimArray = [0,3,6]
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
@@ -28,11 +29,6 @@ def initialize
       element = (@indexx + x) % scaleSize  #adding each to the index of our starting note         
       component = @chromatic[element].upcase  #associating that index with its place in the chromatic scale
       @structure.push(component) #then add each component of scale/mode/chord by this index into new array
-    end
-  end
-  @maj7th_fix = Proc.new do |threshold|
-    if @structure.length > threshold
-      @structure.delete_at(4)
     end
   end
   @output = Proc.new do
@@ -128,9 +124,13 @@ def ninth
   array = @ninthArray
   @construct.call array
   @output.call
-  threshold = 5
-  @maj7th_fix.call threshold
   self
+end
+
+def m13
+  array = @thirteenthArray
+  @construct.call array
+  @output.call
 end
 
 end
@@ -143,8 +143,8 @@ q = Note.new
 #Here we will begin with the calling method for the triad part of the chord
 
 minor_cond = ($input.count("m") == 2) || ($input.count("m") == 1 && maj7_cond == false)
-aug_cond = $input.include?("+")
-dim_cond = $input.include?("o")
+aug_cond = $input.include?("+") ##Take note that we must use this notation for aug
+dim_cond = $input.include?("o") #Take note that we must use this notation for dim
 if minor_cond
   q.m
 elsif aug_cond
@@ -155,9 +155,10 @@ end
 
 #Now we will determine if we need to call any additional methods, or if all we need is the triad
 
-beyond_triad = $input.include?("7" || "9" || "1")
+beyond_triad = $input.include?( "7" || "9" || "1")
 
 #Now we must figure out what to do with the 7th chord
+
 maj7_cond = $input.include?("j")
 if beyond_triad
   if maj7_cond
@@ -167,8 +168,18 @@ if beyond_triad
   end
 end
 
-#Now we must figure out if we go higher than a 9th chord
+#think about adding the 6th by checking to see if there is a d directly behind it (ie. to ensure that it's not an add6) and then making sure that the count of $input is greater than 2 to make sure we account for a d6 situation.
 
+#Now we must figure out the highest degree
+
+beyond_7th_cond = $input.include?( "9" || "1")
+thirteenthChord_cond = $input.include?("3")
+if beyond_7th_cond
+  if thirteenthChord_cond
+    q.thirteenth
+  end
+elsif
+  
 
 
 
