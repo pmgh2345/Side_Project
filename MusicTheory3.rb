@@ -1,8 +1,9 @@
 class Note
 
 def initialize
-  puts "What note are we starting with?"
-  @key = gets.chomp
+  puts "Give me a note or a chord, please."
+  $input = gets.chomp
+  @key = $input[0]
   key = @key
   @chromatic = ["a","a#","b","c","c#","d","d#","e","f","f#","g","g#"]
   scaleSize = 12
@@ -15,8 +16,9 @@ def initialize
   @locrianArray = [0,1,3,5,6,8,10]
   @majorChord_array = [0,4,7]
   @minorChord_array = [0,3,7]
-  @maj7_array = [0,11]
-  @ninthArray = [10,14]
+  @min7_array = [10]
+  @maj7_array = [11]
+  @ninthArray = [14]
   @augArray = [0,4,8]
   @dimArray = [0,3,6]
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
@@ -108,6 +110,13 @@ def dim #this is programmed under assumption that only major chords get diminish
   self
 end
 
+def min7
+  array = @min7_array
+  @construct.call array
+  @output.call
+  self
+end
+
 def maj7
   array = @maj7_array
   @construct.call array
@@ -127,9 +136,39 @@ end
 end
 
 q = Note.new
-q.M.ninth
 
-# To fix the issue with the 7th, lets add a method for major 7th, then for any chords requiring 9ths or higher we will automatically include the minor 7th, and then test the length at the end to see if there is 1 note too many, and if there is we will remove the minor 7th at its index.
+# To fix the issue with the 7th, lets add a method for major 7th, then for any chords requiring 9ths or higher we will automatically include the minor 7th, and then test the length at the end to see if there is 1 note too many, and if there is we will remove the minor 7th at its index. 
+#Screw what i wrote above- we should use the drop method- we say if maj7_cond then we drop the first element of the array housing the output.
+
+#Here we will begin with the calling method for the triad part of the chord
+
+minor_cond = ($input.count("m") == 2) || ($input.count("m") == 1 && maj7_cond == false)
+aug_cond = $input.include?("+")
+dim_cond = $input.include?("o")
+if minor_cond
+  q.m
+elsif aug_cond
+  q.aug
+elsif dim_cond
+  q.dim
+end
+
+#Now we will determine if we need to call any additional methods, or if all we need is the triad
+
+beyond_triad = $input.include?("7" || "9" || "1")
+
+#Now we must figure out what to do with the 7th chord
+maj7_cond = $input.include?("j")
+if beyond_triad
+  if maj7_cond
+    q.maj7
+  else
+    q.min7
+  end
+end
+
+#Now we must figure out if we go higher than a 9th chord
+
 
 
 
