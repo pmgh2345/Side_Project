@@ -119,7 +119,8 @@ end
 def min7
   array = @min7_array
   @construct.call array
-  @output.call
+  @consolidate.call
+  #@output.call
   self
 end
 
@@ -134,7 +135,8 @@ end
 def ninth
   array = @ninthArray
   @construct.call array
-  @output.call
+  @consolidate.call
+  #@output.call
   self
 end
 
