@@ -88,69 +88,56 @@ def locrian
 end
 
 def M
-  array = @majorChord_array
-  @construct.call array
+  @construct.call @majorChord_array
   @consolidate.call
-  #@output.call
   self
 end
 
 def m
-  array = @minorChord_array
-  @construct.call array
-  @output.call
+  @construct.call @minorChord_array
+  @consolidate.call
   self
 end
 
 def aug
-  array = @augArray
-  @construct.call array
-  @output.call
+  @construct.call @augArray
+  @consolidate.call
   self
 end
 
 def dim #this is programmed under assumption that only major chords get diminished. Alter if this proves false.
-  array = @dimArray
-  @construct.call array
-  @output.call
+  @construct.call @dimArray
+  @consolidate.call
   self
 end
 
 def min7
-  array = @min7_array
-  @construct.call array
+  @construct.call @min7_array
   @consolidate.call
-  #@output.call
   self
 end
 
 def maj7
-  array = @maj7_array
-  @construct.call array
+  @construct.call @maj7_array
   @consolidate.call
-  #@output.call
   self
 end
 
 def ninth
-  array = @ninthArray
-  @construct.call array
+  @construct.call @ninthArray
   @consolidate.call
-  #@output.call
   self
 end
 
 def eleventh
-  array = @eleventhArray
-  @construct.call array
-  @output.call
+  @construct.call @eleventhArray
+  @consolidate.call
   self
 end
 
 def thirteenth
-  array = @thirteenthArray
-  @construct.call array
-  @output.call
+  @construct.call @thirteenthArray
+  @consolidate.call
   self
 end
 
@@ -211,7 +198,10 @@ end
 
 #Now we have to see if there are any modifiers
 
-#modifier_cond = 
+sus_cond = $input.include?("u")
+flatten_cond = $input.split.drop(1).include?("b")
+
+modifier_cond = $input.include?("6")
 
 $output.call
 
