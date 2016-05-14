@@ -47,44 +47,38 @@ def initialize
 end
 
 def majorScale
-  array = @majorArray
-  @construct.call array
+  @construct.call @majorArray
   @output.call
 end
 
 def minorScale
-  array = @minorArray
-  @construct.call array
+  @construct.call @minorArray
   @output.call
 end
 
 def dorian
-  array = @dorianArray
-  @construct.call array
+  @construct.call @dorianArray
   @output.call
 end
 
 def phrygian
-  array = @phrygianArray
-  @construct.call array
+  @construct.call @phrygianArray
   @output.call
 end
 
 def lydian
-  array = @lydianArray
-  @construct.call array
+  @construct.call @lydianArray
   @output.call
 end
 
 def mixolydian
-  array = @mixolydianArray
-  @construct.call array
+  @construct.call @mixolydianArray
   @output.call
 end
 
 def locrian
-  array = @locrianArray
-  @construct.call array
+  @construct.call @locrianArray
+  @output.call
 end
 
 def M
