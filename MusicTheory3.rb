@@ -27,6 +27,10 @@ def initialize
   @thirteenthArray = [14,17,21]
   @augArray = [0,4,8]
   @dimArray = [0,3,6]
+  @sus_number = $input.partition("sus").pop.to_i
+  puts @sus_number #to delete after troubleshooting
+  @sus_array = [@majorArray[@sus_number-1]]
+  puts @sus_array #to delete after torubleshooting
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
   @consolidate_array = []
   @construct = Proc.new do |array|
@@ -135,6 +139,18 @@ def thirteenth
   self
 end
 
+def sus
+  @consolidate_array.delete_at(1)
+  @construct.call @sus_array
+  @consolidate.call
+  @consolidate_array.insert(1,@consolidate_array.pop)
+  self
+end
+
+def add
+  
+end
+
 end
 
 q = Note.new
@@ -184,7 +200,6 @@ if beyond_7th_cond
     q.thirteenth
   elsif eleventhChord_cond
     q.eleventh
-    puts "hey"
   else
     q.ninth
   end
@@ -192,10 +207,35 @@ end
 
 #Now we have to see if there are any modifiers
 
-sus_cond = $input.include?("u")
-flatten_cond = $input.split.drop(1).include?("b")
+#Let's start with sus
 
-modifier_cond = $input.include?("6")
+sus_cond = $input.include?("u")
+if sus_cond
+  q.sus
+end
+
+#now we will add conditions for chords that want you to "add" a degree
+
+addCount = $input.chars.count("d")
+add_cond = addCount >= 2
+
+addProc = Proc.new do
+  if minor_cond
+    q.add (minor)
+  else
+    q.add (major)
+  end
+end
+
+if add_cond
+  puts $input.partition("dd").pop.chr
+  if addCount >=4
+    puts $input.rpartition("dd").pop.chr
+  end
+end
+
+
+flatten_cond = $input.split.drop(1).include?("b")
 
 $output.call
 
