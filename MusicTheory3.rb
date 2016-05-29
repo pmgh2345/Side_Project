@@ -164,15 +164,14 @@ def add (scale)
   end
   #Then we will adjust this scale degree to the index at which it will be found in the appropriate array
   indexAdjust = Proc.new do |whichAdd| #whichAdd will either be the first or second add
-    whichAdd.to_i - 1
+    (whichAdd.to_i - 1) % 7
   end
   if scale == "minor"
     @construct.call [@minorArray[(firstAdd.to_i-1)%7]]
     @consolidate.call
     self
   else
-#puts @majorArray[(firstAdd.to_i-1)%7]
-    @construct.call [@majorArray[(firstAdd.to_i-1)%7]]
+    @construct.call [@majorArray[indexAdjust firstAdd]]
     @consolidate.call
     self
   end
