@@ -29,7 +29,7 @@ def initialize
   @dimArray = [0,3,6]
   @sus_number = $input.partition("sus").pop.to_i
   puts @sus_number #to delete after troubleshooting
-  @sus_array = [@majorArray[@sus_number-1]]
+  @sus_array = [@majorArray[@sus_number-1]] #we can use majorarray as both m and M have same degrees for 2 and 4
   puts @sus_array #to delete after torubleshooting
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
   @consolidate_array = []
@@ -147,16 +147,39 @@ def sus
   self
 end
 
-def add
-  
+def add (scale)
+  #First we will isolate the scale degrees to be added
+  addAdjust = Proc.new do |addedNote| #proc will determine whether the interval to be added is double digits and shorten if necessary
+  if addedNote[1].to_i == 0
+    addedNote.slice!(1)
+  end
+  end
+  firstAdd = $input.partition("dd").pop.slice(0..1)
+  addAdjust.call firstAdd
+  #addCount = $input.chars.count("d")
+  if $addCount >= 4
+    doubleAdd = true #condition says we are having to add 2 notes
+    secondAdd = $input.rpartition("dd").pop.slice(0..1)
+    addAdjust.call secondAdd
+  end
+  #Then we will adjust this scale degree to the index at which it will be found in the appropriate array
+  indexAdjust = Proc.new do |whichAdd| #whichAdd will either be the first or second add
+    addIndex = whichAdd.to_i - 1
+  end
+  if scale == "minor"
+    @construct.call @minorArray[indexAdjust.call firstAdd].to_a
+    @consolidate.call
+    self
+  else
+    @construct.call @majorArray[indexAdjust.call firstAdd].to_a
+    @consolidate.call
+    self
+  end
 end
 
 end
 
 q = Note.new
-
-# To fix the issue with the 7th, lets add a method for major 7th, then for any chords requiring 9ths or higher we will automatically include the minor 7th, and then test the length at the end to see if there is 1 note too many, and if there is we will remove the minor 7th at its index. 
-#Screw what i wrote above- we should use the drop method- we say if maj7_cond then we drop the first element of the array housing the output.
 
 #Here we will begin with the calling method for the triad part of the chord
 maj7_cond = $input.include?("j")
@@ -174,8 +197,9 @@ else
 end
 
 #Now we will determine if we need to call any additional methods, or if all we need is the triad
-
-beyond_triad = $input.include?( "7" ) || $input.include?("9") || $input.include?("1")
+#We will add an adjustment to input that excludes the add modifier and anything afterwards
+inputAdjusted = $input.partition("add").first
+beyond_triad = inputAdjusted.include?( "7" ) || inputAdjusted.include?("9") || inputAdjusted.include?("1")
 
 #Now we must figure out what to do with the 7th chord
 
@@ -214,24 +238,21 @@ if sus_cond
   q.sus
 end
 
-#now we will add conditions for chords that want you to "add" a degree
+#now we will add conditions for chords that where you have to "add" a degree
 
-addCount = $input.chars.count("d")
-add_cond = addCount >= 2
+$addCount = $input.chars.count("d")
+add_cond = $addCount >= 2
 
 addProc = Proc.new do
   if minor_cond
-    q.add (minor)
+    q.add ("minor")
   else
-    q.add (major)
+    q.add ("major")
   end
 end
 
 if add_cond
-  puts $input.partition("dd").pop.chr
-  if addCount >=4
-    puts $input.rpartition("dd").pop.chr
-  end
+  addProc.call
 end
 
 
