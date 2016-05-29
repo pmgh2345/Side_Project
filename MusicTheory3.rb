@@ -28,9 +28,9 @@ def initialize
   @augArray = [0,4,8]
   @dimArray = [0,3,6]
   @sus_number = $input.partition("sus").pop.to_i
-  puts @sus_number #to delete after troubleshooting
+  #puts @sus_number #to delete after troubleshooting
   @sus_array = [@majorArray[@sus_number-1]] #we can use majorarray as both m and M have same degrees for 2 and 4
-  puts @sus_array #to delete after torubleshooting
+  #puts @sus_array #to delete after torubleshooting
   @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
   @consolidate_array = []
   @construct = Proc.new do |array|
@@ -156,7 +156,7 @@ def add (scale)
   end
   firstAdd = $input.partition("dd").pop.slice(0..1)
   addAdjust.call firstAdd
-  #addCount = $input.chars.count("d")
+  addCount = $input.chars.count("d")
   if $addCount >= 4
     doubleAdd = true #condition says we are having to add 2 notes
     secondAdd = $input.rpartition("dd").pop.slice(0..1)
@@ -164,14 +164,15 @@ def add (scale)
   end
   #Then we will adjust this scale degree to the index at which it will be found in the appropriate array
   indexAdjust = Proc.new do |whichAdd| #whichAdd will either be the first or second add
-    addIndex = whichAdd.to_i - 1
+    whichAdd.to_i - 1
   end
   if scale == "minor"
-    @construct.call @minorArray[indexAdjust.call firstAdd].to_a
+    @construct.call [@minorArray[(firstAdd.to_i-1)%7]]
     @consolidate.call
     self
   else
-    @construct.call @majorArray[indexAdjust.call firstAdd].to_a
+#puts @majorArray[(firstAdd.to_i-1)%7]
+    @construct.call [@majorArray[(firstAdd.to_i-1)%7]]
     @consolidate.call
     self
   end
@@ -216,8 +217,8 @@ end
 
 #Now we must figure out the highest degree
 
-beyond_7th_cond = $input.include?( "9") || $input.include?("1")
-thirteenthChord_cond = $input.include?("3")
+beyond_7th_cond = inputAdjusted.include?( "9") || inputAdjusted.include?("1")
+thirteenthChord_cond = inputAdjusted.include?("3")
 eleventhChord_cond = (thirteenthChord_cond == false) && ($input.include?( "9") == false)
 if beyond_7th_cond
   if thirteenthChord_cond
