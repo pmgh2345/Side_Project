@@ -166,15 +166,33 @@ def add (scale)
   indexAdjust = Proc.new do |whichAdd| #whichAdd will either be the first or second add
     (whichAdd.to_i - 1) % 7
   end
-  if scale == "minor"
-    @construct.call [@minorArray[(firstAdd.to_i-1)%7]]
-    @consolidate.call
-    self
-  else
-    @construct.call [@majorArray[indexAdjust firstAdd]]
-    @consolidate.call
-    self
+  addContainer = [firstAdd] #this array will hold the notes to add, so we can use each statement depending on scale
+  if secondAdd != nil
+    addContainer[1] = secondAdd
   end
+  addContainer.each do |x|
+    if scale == "minor" 
+      @construct.call [@minorArray[indexAdjust.call x]]
+      @consolidate.call
+      self
+    else
+      @construct.call [@majorArray[indexAdjust.call x]]
+      @consolidate.call
+      self
+    end
+  end
+end
+
+def six (scale)
+ if scale == "minor" 
+   @construct.call [@minorArray[5]]
+   @consolidate.call
+   self
+ else
+   @construct.call [@majorArray[5]]
+   @consolidate.call
+   self
+ end 
 end
 
 end
@@ -199,13 +217,24 @@ end
 #Now we will determine if we need to call any additional methods, or if all we need is the triad
 #We will add an adjustment to input that excludes the add modifier and anything afterwards
 inputAdjusted = $input.partition("add").first
-beyond_triad = inputAdjusted.include?( "7" ) || inputAdjusted.include?("9") || inputAdjusted.include?("1")
 
-#Now we must figure out what to do with the 7th chord
+#Now we will write condition to check for the 6th degree
+six_cond = inputAdjusted.include?( "6" )
+
+#Now we will see if we are going beyond the triad to a different chord (7th, beyond)
+beyond_triad = six_cond || inputAdjusted.include?( "7" ) || inputAdjusted.include?("9") || inputAdjusted.include?("1")
+
+#Now we must figure out what to do with the 6th degree / 7th chord
 
 
 if beyond_triad
-  if maj7_cond
+  if six_cond
+    if minor_cond
+      q.six ("minor")
+    else
+      q.six ("major")
+    end
+  elsif maj7_cond
     q.maj7
   else
     q.min7
