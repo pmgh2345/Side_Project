@@ -250,7 +250,12 @@ thirteenthChord_cond = inputAdjusted.include?("3")
 eleventhChord_cond = (thirteenthChord_cond == false) && ($input.include?( "9") == false)
 if beyond_7th_cond
   if thirteenthChord_cond
-    q.six
+    q.eleventh
+    if minor_cond
+      q.six ("minor")
+    else
+      q.six("major")
+    end
   elsif eleventhChord_cond
     q.eleventh
   else
