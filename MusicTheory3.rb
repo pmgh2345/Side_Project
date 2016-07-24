@@ -43,9 +43,10 @@ def initialize
   end
   @consolidate = Proc.new do
     @consolidate_array = @consolidate_array + @structure
+    puts @consolidate_array
+    puts "done" #get rid of when done
   end
   $output = Proc.new do
-    #puts "Here it is!"
     puts @consolidate_array.join("--") #returns new array containing desired scale/mode/chord
   end
 end
@@ -195,6 +196,49 @@ def six (scale)
  end 
 end
 
+def sharpen (scale)
+  sharpAdjust = Proc.new do |sharpNote| #proc will determine whether the interval to be #'d/b'd is double digits and shorten if necessary
+    if sharpNote[1].to_i == 0
+      sharpNote.slice!(1)
+    end
+  end
+  firstSharp = $input.partition("#").pop.slice(0..1)
+  sharpAdjust.call firstSharp
+  sharpCount = $input.split("").drop(2).count("#")
+  if sharpCount > 1
+    doubleSharp = true #condition says we are having to sharp 2 notes
+    secondSharp = $input.rpartition("#").pop.slice(0..1)
+    sharpAdjust.call secondSharp
+  end
+  #Then we will adjust this scale degree to the index at which it will be found in the appropriate array
+  indexAdjust = Proc.new do |whichSharp| #whichSharp will either be the first or second sharp- make this proc instance variable, DRY
+    (whichSharp.to_i - 1) % 7
+  end
+  sharpContainer = [firstSharp] #this array will hold the notes to add, so we can use each statement depending on scale
+  if secondSharp != nil
+    sharpContainer[1] = secondSharp
+  end
+  replaceProc = Proc.new do |array| #this proc will go back and remove the unsharpened/flattened note after installing sharp/flat note
+    delete = @consolidate_array.find_index(@structure[0])
+    @consolidate_array.delete_at(delete)
+  end
+  sharpContainer.each do |x|
+    if scale == "minor" 
+      @construct.call [@minorArray[indexAdjust.call x]+1]
+      @consolidate.call
+      self
+      @construct.call [@minorArray[indexAdjust.call x]]
+      replaceProc.call @minorArray
+    else
+      @construct.call [@majorArray[indexAdjust.call x]+1]
+      @consolidate.call
+      self
+      @construct.call [@majorArray[indexAdjust.call x]]
+      replaceProc.call @majorArray
+    end
+  end
+end
+
 end
 
 q = Note.new
@@ -289,8 +333,23 @@ if add_cond
   addProc.call
 end
 
+#Now we will add code for sharpening and flattening- we should have it give us everything unsharpened, then take the sharpened degree, add it, and delete the unsharpened one.
 
-flatten_cond = $input.split.drop(1).include?("b")
+flatten_cond = $input.split("").drop(2).include?("b")
+
+sharpen_cond = $input.split("").drop(2).include?("#")
+
+accidentalProc = Proc.new do
+  if minor_cond
+    q.sharpen ("minor")
+  else
+    q.sharpen ("major")
+  end
+end
+
+if flatten_cond || sharpen_cond
+  accidentalProc.call
+end
 
 $output.call
 
