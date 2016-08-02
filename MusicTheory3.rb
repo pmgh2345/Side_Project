@@ -239,6 +239,49 @@ def sharpen (scale)
   end
 end
 
+def flatten (scale)
+  flatAdjust = Proc.new do |flatNote| #proc will determine whether the interval to be b'd/b'd is double digits and shorten if necessary
+    if flatNote[1].to_i == 0
+      flatNote.slice!(1)
+    end
+  end
+  firstFlat = $input.partition("b").pop.slice(0..1)
+  flatAdjust.call firstFlat
+  flatCount = $input.split("").drop(2).count("b")
+  if flatCount > 1
+    doubleFlat = true #condition says we are having to flat 2 notes
+    secondFlat = $input.rpartition("b").pop.slice(0..1)
+    flatAdjust.call secondFlat
+  end
+  #Then we will adjust this scale degree to the index at which it will be found in the appropriate array
+  indexAdjust = Proc.new do |whichFlat| #whichFlat will either be the first or second flat- make this proc instance variable, DRY
+    (whichFlat.to_i - 1) % 7
+  end
+  flatContainer = [firstFlat] #this array will hold the notes to add, so we can use each statement depending on scale
+  if secondFlat != nil
+    flatContainer[1] = secondFlat
+  end
+  replaceProc = Proc.new do |array| #this proc will go back and remove the unsharpened/flattened note after installing sharp/flat note
+    delete = @consolidate_array.find_index(@structure[0])
+    @consolidate_array.delete_at(delete)
+  end
+  flatContainer.each do |x|
+    if scale == "minor" 
+      @construct.call [@minorArray[indexAdjust.call x]-1]
+      @consolidate.call
+      self
+      @construct.call [@minorArray[indexAdjust.call x]]
+      replaceProc.call @minorArray
+    else
+      @construct.call [@majorArray[indexAdjust.call x]-1]
+      @consolidate.call
+      self
+      @construct.call [@majorArray[indexAdjust.call x]]
+      replaceProc.call @majorArray
+    end
+  end
+end
+
 end
 
 q = Note.new
@@ -341,9 +384,17 @@ sharpen_cond = $input.split("").drop(2).include?("#")
 
 accidentalProc = Proc.new do
   if minor_cond
-    q.sharpen ("minor")
+    if sharpen_cond
+      q.sharpen ("minor")
+    else
+      q.flatten ("minor")
+    end
   else
-    q.sharpen ("major")
+    if sharpen_cond
+      q.sharpen ("major")
+    else
+      q.flatten ("major")
+    end
   end
 end
 
