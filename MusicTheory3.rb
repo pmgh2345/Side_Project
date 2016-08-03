@@ -400,5 +400,5 @@ if flatten_cond || sharpen_cond
   accidentalProc.call
 end
 
-$output.call
+
 
