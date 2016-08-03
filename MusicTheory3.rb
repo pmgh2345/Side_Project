@@ -43,8 +43,6 @@ def initialize
   end
   @consolidate = Proc.new do
     @consolidate_array = @consolidate_array + @structure
-    puts @consolidate_array
-    puts "done" #get rid of when done
   end
   $output = Proc.new do
     puts @consolidate_array.join("--") #returns new array containing desired scale/mode/chord
