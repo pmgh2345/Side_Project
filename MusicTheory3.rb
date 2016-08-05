@@ -4,12 +4,12 @@ def initialize
   puts "Give me a note or a chord, please."
   $input = gets.chomp
   if $input[1] == "#"
-    @key = $input[0] + $input[1]
+    $key = $input[0] + $input[1]
   else
-    @key = $input[0]
+    $key = $input[0]
   end
-  key = @key
-  @chromatic = ["a","a#","b","c","c#","d","d#","e","f","f#","g","g#"]
+  key = $key
+  $chromatic = ["a","a#","b","c","c#","d","d#","e","f","f#","g","g#"]
   scaleSize = 12
   @majorArray = [0,2,4,5,7,9,11]
   @minorArray = [0,2,3,5,7,8,10]
@@ -31,13 +31,13 @@ def initialize
   #puts @sus_number #to delete after troubleshooting
   @sus_array = [@majorArray[@sus_number-1]] #we can use majorarray as both m and M have same degrees for 2 and 4
   #puts @sus_array #to delete after torubleshooting
-  @indexx = @chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
+  @indexx = $chromatic.find_index(key) #takes instance of the note class converted into string, finds its index in the 'chromatic' array
   @consolidate_array = []
   @construct = Proc.new do |array|
     @structure = []
     array.each do |x| #we iterate over the appropriate array's intervals, say first degree of maj scale, 2nd, 3rd...
       element = (@indexx + x) % scaleSize  #adding each to the index of our starting note         
-      component = @chromatic[element].upcase  #associating that index with its place in the chromatic scale
+      component = $chromatic[element].upcase  #associating that index with its place in the chromatic scale
       @structure.push(component) #then add each component of scale/mode/chord by this index into new array
     end
   end
